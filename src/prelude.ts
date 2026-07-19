@@ -23,6 +23,7 @@ import {
   appN,
   array,
   binop,
+  bool,
   endorse,
   fix as fixApplied,
   fork,
@@ -112,27 +113,46 @@ export const robustEndorseDef: Expr = lam(
 
 /**
  * `bounded_endorse` — §E.3, parameterised by a fixed, static trust
- * domain (a JS-level string array, baked into the generated Expr as a
- * chain of equality checks — no generic `any`/fold combinator needed).
- * In-domain values are washed to bottom-integrity trusted; out-of-domain
- * values pass through unchanged (still whatever they were before,
- * typically untrusted) rather than aborting — this is the non-blocking
- * behaviour §E.3 specifically calls out as the point of this variant
- * versus `robust_endorse`'s blocking one.
+ * domain (a JS-level array, baked into the generated Expr as a chain of
+ * equality checks — no generic `any`/fold combinator needed). In-domain
+ * values are washed to bottom-integrity trusted; out-of-domain values
+ * pass through unchanged (still whatever they were before, typically
+ * untrusted) rather than aborting — this is the non-blocking behaviour
+ * §E.3 specifically calls out as the point of this variant versus
+ * `robust_endorse`'s blocking one.
+ *
+ * §7.3's case study explicitly cites *booleans* alongside category
+ * labels as the intended small-domain values ("the agent endorses
+ * booleans and category labels"). Building every domain entry as a
+ * `str(...)` literal — as this used to do unconditionally — silently
+ * makes booleans (and numbers) impossible to ever recognise as
+ * in-domain: comparing a genuine `bool` value against a `{kind:
+ * "string", value: true}` scalar always fails on the kind mismatch
+ * (`scalarEq`, model.ts), so every boolean value falls through to the
+ * out-of-domain, still-untrusted branch regardless of its actual value —
+ * fail-closed, not a security bug, but a real gap against the paper's
+ * own stated use case for this construct. Fixed by building each
+ * domain entry with the scalar constructor matching its actual JS type.
  *
  * IMPORTANT (§E.3): domain must be fixed at construction time. A domain
  * built from anything computed at runtime forfeits the log₂n leakage
  * bound this construct is meant to provide — don't parameterise this by
  * an Expr, only by a plain JS array baked in here.
  */
-export function boundedEndorseDef(domain: ReadonlyArray<string>): Expr {
+export function boundedEndorseDef(domain: ReadonlyArray<string | number | boolean>): Expr {
   const washed = endorse(tagArray([]), v("val"));
   // if w == dom[0] then w else if w == dom[1] then w else ... else v
   let chain: Expr = v("val"); // fallthrough: out-of-domain, pass through unchanged
   for (let i = domain.length - 1; i >= 0; i--) {
-    chain = ifThenElse(binop("==", v("w"), str(domain[i]!)), v("w"), chain);
+    chain = ifThenElse(binop("==", v("w"), domainScalarLit(domain[i]!)), v("w"), chain);
   }
   return lam("val", letIn("w", washed, chain));
+}
+
+function domainScalarLit(value: string | number | boolean): Expr {
+  if (typeof value === "boolean") return bool(value);
+  if (typeof value === "number") return num(value);
+  return str(value);
 }
 
 /**
