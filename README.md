@@ -1,4 +1,4 @@
-# llmbda-ts
+# LLMbdaJS
 
 [![CI](https://github.com/schlpbch/lllmda-ts/actions/workflows/ci.yml/badge.svg)](https://github.com/schlpbch/lllmda-ts/actions/workflows/ci.yml)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
@@ -8,7 +8,7 @@ A TypeScript reference implementation of the **LLMbda calculus** — Garby,
 Gordon & Sands, *"The LLMbda Calculus: AI Agents, Conversations, and
 Information Flow"* (arXiv:2602.20064, July 2026).
 
-## What this is
+## What this trie to be
 
 An executable interpreter for the calculus's operational semantics:
 labeled lambda calculus + first-class conversation primitives (`send`,
@@ -24,12 +24,10 @@ Theorem 1 (TIPNI), Theorem 2 (Insulated TIPNI), Theorem 3 (oracular
 correctness) — are machine-checked in the paper's Lean 4 development.
 Porting the *algorithm* to TypeScript does not port the *proof*.
 
-What this repo does instead: implements the same evaluation rules so the
+What this repo tries instead: implement the same evaluation rules so the
 same *inputs* produce the same *outputs* as the paper's interpreter
 (spot-checked against the paper's own worked examples in `examples/`,
-including its named leak example and a positive `endorse` test). If you
-need the actual noninterference guarantee, it lives in the paper's Lean
-development, not here.
+including its named leak example and a positive `endorse` test). 
 
 ## Structure
 
@@ -108,3 +106,5 @@ Roughly in order of how much they'd actually buy you:
 4. **A real `Oracle` backed by an actual LLM API** — currently only
    `scriptedOracle`/`ruleOracle` (test doubles) exist; a production
    oracle is a thin adapter.
+
+Copyright 2026, Andreas Schlapbach
