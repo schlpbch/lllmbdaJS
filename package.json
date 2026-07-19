@@ -7,6 +7,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "test": "node --import tsx test/run.ts",
+    "coverage": "c8 --all --src src --include \"src/**/*.ts\" --exclude \"test/**\" --exclude \"examples/**\" --reporter text --reporter html node --import tsx test/run.ts",
     "example:postcode": "node --import tsx examples/postcode.ts",
     "example:retry": "node --import tsx examples/retry-loop.ts",
     "example:leak": "node --import tsx examples/fenton-denning-leak.ts",
@@ -15,7 +16,8 @@
     "example:robust-endorse": "node --import tsx examples/robust-endorse-cascade.ts"
   },
   "devDependencies": {
-    "typescript": "^5.6.0",
-    "tsx": "^4.19.0"
+    "c8": "^12.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0"
   }
 }

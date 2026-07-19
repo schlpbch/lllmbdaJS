@@ -24,6 +24,7 @@ noninterferent."
 pnpm install
 pnpm run build               # tsc -p tsconfig.json — strict build, checks src/ only
 pnpm test                    # node --import tsx test/run.ts — runs every examples/*.ts as pass/fail
+pnpm run coverage             # same suite, instrumented with c8 (text + html report in coverage/)
 pnpm run example:postcode
 pnpm run example:retry
 pnpm run example:leak

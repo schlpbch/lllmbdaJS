@@ -165,6 +165,7 @@ security theorem, not this repository.
 pnpm install
 pnpm run build     # full strict tsc build, checks src/ only
 pnpm test           # runs every examples/*.ts, reports pass/fail
+pnpm run coverage    # same suite, instrumented with c8 (text + html report in coverage/)
 pnpm run example:postcode
 pnpm run example:retry
 pnpm run example:leak
