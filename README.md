@@ -73,6 +73,13 @@ examples/
   quarantine-classify.ts      — §5.1, full flow: quarantine + bounded_endorse gating
                                a trust-asserting sink
   robust-endorse-cascade.ts   — §E.2, proves endorsement cascades are blocked
+  dynamic-label.ts             — §3.2, labelDyn: an LLM-declared (not compile-time)
+                               sensitivity tag still drives the implicit-flow check
+  clear-isolation.ts           — §3.1, clear: proves quarantine's isolation is about
+                               conversation HISTORY, not just labels
+  camel-provenance-quarantine.ts — Appendix D.5, the CaMeL-style Sources×Readers
+                               lattice exercised end to end (a second lattice
+                               instance, not just the {U,S} running example)
 
 test/run.ts    — runs every examples/*.ts as a pass/fail suite
 ```
@@ -173,6 +180,10 @@ pnpm run example:leak
 pnpm run example:confinement
 pnpm run example:quarantine
 pnpm run example:robust-endorse
+pnpm run example:endorse
+pnpm run example:camel-provenance
+pnpm run example:dynamic-label
+pnpm run example:clear-isolation
 ```
 
 ## Where this could go

@@ -13,7 +13,11 @@
     "example:leak": "node --import tsx examples/fenton-denning-leak.ts",
     "example:confinement": "node --import tsx examples/var-pc-confinement.ts",
     "example:quarantine": "node --import tsx examples/quarantine-classify.ts",
-    "example:robust-endorse": "node --import tsx examples/robust-endorse-cascade.ts"
+    "example:robust-endorse": "node --import tsx examples/robust-endorse-cascade.ts",
+    "example:endorse": "node --import tsx examples/endorse.ts",
+    "example:camel-provenance": "node --import tsx examples/camel-provenance-quarantine.ts",
+    "example:dynamic-label": "node --import tsx examples/dynamic-label.ts",
+    "example:clear-isolation": "node --import tsx examples/clear-isolation.ts"
   },
   "devDependencies": {
     "c8": "^12.0.0",

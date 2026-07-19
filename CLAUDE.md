@@ -31,6 +31,10 @@ pnpm run example:leak
 pnpm run example:confinement
 pnpm run example:quarantine
 pnpm run example:robust-endorse
+pnpm run example:endorse
+pnpm run example:camel-provenance
+pnpm run example:dynamic-label
+pnpm run example:clear-isolation
 ```
 
 There is no separate lint step and no per-test filtering flag — `test/run.ts`
