@@ -42,6 +42,7 @@ pnpm run example:binop-prim-consistency
 pnpm run example:camel-readers-flowsto
 pnpm run example:missing-binops
 pnpm run example:record-duplicate-field
+pnpm run example:index-non-integer
 ```
 
 There is no separate lint step and no per-test filtering flag — `test/run.ts`

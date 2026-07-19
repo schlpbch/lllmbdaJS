@@ -24,7 +24,8 @@
     "example:binop-prim-consistency": "node --import tsx examples/binop-prim-consistency.ts",
     "example:camel-readers-flowsto": "node --import tsx examples/camel-readers-flowsto.ts",
     "example:missing-binops": "node --import tsx examples/missing-binops.ts",
-    "example:record-duplicate-field": "node --import tsx examples/record-duplicate-field.ts"
+    "example:record-duplicate-field": "node --import tsx examples/record-duplicate-field.ts",
+    "example:index-non-integer": "node --import tsx examples/index-non-integer.ts"
   },
   "devDependencies": {
     "c8": "^12.0.0",

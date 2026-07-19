@@ -324,7 +324,17 @@ export async function evaluate<L>(
       const i = await evaluate(model, oracle, run, pc, o.conv, expr.idx, env);
       if (i.value.value.kind !== "number") throw new RuntimeError(`index must be a number`);
       const idx = i.value.value.value;
-      if (idx < 0 || idx >= o.value.value.items.length) {
+      // §B.1's ⇓-ArrayIndex takes the index as Rat.num(i) — the numerator
+      // of the rational number i in lowest terms, which the spec notes
+      // "for the non-negative integral indices produced by arithmetic is
+      // i itself". This port's `number` is a plain JS float, not a
+      // rational type, so it can't reproduce Rat.num's behavior for a
+      // genuinely fractional index (e.g. 3/2) — the pragmatic choice
+      // here is to require an actual integer and fail cleanly otherwise,
+      // rather than silently using JS's `array[1.5] === undefined`
+      // behavior, which previously crashed with an uncaught TypeError
+      // instead of a RuntimeError.
+      if (!Number.isInteger(idx) || idx < 0 || idx >= o.value.value.items.length) {
         throw new RuntimeError(`index out of bounds: ${idx}`);
       }
       const elem = asL<L>(o.value.value.items[idx]!);
