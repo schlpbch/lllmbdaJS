@@ -27,7 +27,8 @@
     "example:record-duplicate-field": "node --import tsx examples/record-duplicate-field.ts",
     "example:index-non-integer": "node --import tsx examples/index-non-integer.ts",
     "example:deep-label-closure-env": "node --import tsx examples/deep-label-closure-env.ts",
-    "example:bounded-endorse-boolean-domain": "node --import tsx examples/bounded-endorse-boolean-domain.ts"
+    "example:bounded-endorse-boolean-domain": "node --import tsx examples/bounded-endorse-boolean-domain.ts",
+    "example:primeval-error-type": "node --import tsx examples/primeval-error-type.ts"
   },
   "devDependencies": {
     "c8": "^12.0.0",

@@ -1,5 +1,6 @@
 import type { BareValue, Expr, Scalar } from "./ast.js";
 import type { Lattice } from "./lattice.js";
+import { RuntimeError } from "./errors.js";
 
 /**
  * The model configuration — the TS analog of §3.3's PModel<L> structure,
@@ -92,7 +93,7 @@ function jsonToExpr(json: unknown): Expr {
       ),
     };
   }
-  throw new Error(`jsonToExpr: unsupported JSON value ${String(json)}`);
+  throw new RuntimeError(`jsonToExpr: unsupported JSON value ${String(json)}`);
 }
 
 // -------------------- default primitive table (§B.1) --------------------
@@ -106,7 +107,7 @@ function asScalar(v: BareValue): Scalar {
   ) {
     return v;
   }
-  throw new Error(`primEval: expected scalar, got ${v.kind}`);
+  throw new RuntimeError(`primEval: expected scalar, got ${v.kind}`);
 }
 
 export function defaultPrimEval(name: string, arg: BareValue): BareValue {
@@ -117,19 +118,19 @@ export function defaultPrimEval(name: string, arg: BareValue): BareValue {
       return shapeOf(arg);
     case "recordUpdate": {
       if (arg.kind !== "array" || arg.items.length !== 3) {
-        throw new Error("primEval recordUpdate: expected [record, field, value]");
+        throw new RuntimeError("primEval recordUpdate: expected [record, field, value]");
       }
       const [recV, fieldV, valV] = arg.items;
-      if (recV!.value.kind !== "record") throw new Error("recordUpdate: not a record");
+      if (recV!.value.kind !== "record") throw new RuntimeError("recordUpdate: not a record");
       const fieldName = asScalar(fieldV!.value);
-      if (fieldName.kind !== "string") throw new Error("recordUpdate: field name must be a string");
+      if (fieldName.kind !== "string") throw new RuntimeError("recordUpdate: field name must be a string");
       const fields = new Map(recV!.value.fields);
       fields.set(fieldName.value, valV!);
       return { kind: "record", fields };
     }
     default: {
       if (name.startsWith("binop_")) return binopEval(name.slice("binop_".length), arg);
-      throw new Error(`primEval: unknown primitive "${name}"`);
+      throw new RuntimeError(`primEval: unknown primitive "${name}"`);
     }
   }
 }
@@ -189,7 +190,7 @@ function shapeOf(v: BareValue): BareValue {
 
 function binopEval(op: string, arg: BareValue): BareValue {
   if (arg.kind !== "array" || arg.items.length !== 2) {
-    throw new Error(`primEval binop_${op}: expected a 2-element array argument`);
+    throw new RuntimeError(`primEval binop_${op}: expected a 2-element array argument`);
   }
   const a = arg.items[0]!.value;
   const b = arg.items[1]!.value;
@@ -198,7 +199,7 @@ function binopEval(op: string, arg: BareValue): BareValue {
       if (a.kind === "number" && b.kind === "number") return { kind: "number", value: a.value + b.value };
       if (a.kind === "string" && b.kind === "string") return { kind: "string", value: a.value + b.value };
       if (a.kind === "array" && b.kind === "array") return { kind: "array", items: [...a.items, ...b.items] };
-      throw new Error("binop_add: unsupported operand types");
+      throw new RuntimeError("binop_add: unsupported operand types");
     case "sub":
       return { kind: "number", value: numOf(a) - numOf(b) };
     case "mul":
@@ -220,11 +221,11 @@ function binopEval(op: string, arg: BareValue): BareValue {
     case "neq":
       return { kind: "bool", value: !scalarEq(a, b) };
     default:
-      throw new Error(`binop_${op}: unknown operator`);
+      throw new RuntimeError(`binop_${op}: unknown operator`);
   }
 }
 function numOf(v: BareValue): number {
-  if (v.kind !== "number") throw new Error(`expected number, got ${v.kind}`);
+  if (v.kind !== "number") throw new RuntimeError(`expected number, got ${v.kind}`);
   return v.value;
 }
 function scalarEq(a: BareValue, b: BareValue): boolean {
@@ -233,5 +234,5 @@ function scalarEq(a: BareValue, b: BareValue): boolean {
   if (a.kind === "string" && b.kind === "string") return a.value === b.value;
   if (a.kind === "bool" && b.kind === "bool") return a.value === b.value;
   if (a.kind === "null" && b.kind === "null") return true;
-  throw new Error("binop_eq: unsupported operand types (only scalars are comparable)");
+  throw new RuntimeError("binop_eq: unsupported operand types (only scalars are comparable)");
 }

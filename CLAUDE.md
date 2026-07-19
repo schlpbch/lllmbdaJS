@@ -45,6 +45,7 @@ pnpm run example:record-duplicate-field
 pnpm run example:index-non-integer
 pnpm run example:deep-label-closure-env
 pnpm run example:bounded-endorse-boolean-domain
+pnpm run example:primeval-error-type
 ```
 
 There is no separate lint step and no per-test filtering flag — `test/run.ts`
