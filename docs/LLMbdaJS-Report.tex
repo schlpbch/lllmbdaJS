@@ -54,7 +54,9 @@
 
 \title{The LLMbda Calculus: Information Flow Control for LLM Agent
 Programs\\[0.3em]\large Concepts and a TypeScript Reference Implementation}
-\author{}
+\author{Andreas Schlapbach
+  \email{schlpbch@gmail.com}
+}
 \date{}
 
 \begin{document}
@@ -83,19 +85,12 @@ closes with pointers to further reading and open future work.
 \section{Introduction}
 % ---------------------------------------------------------------------
 
-This report assumes familiarity with lambda calculus and basic type systems; no prior
-exposure to information flow control is assumed.
-
-\subsection{An agent that reads too much}
-
 An email assistant reads your inbox to draft replies. One message contains
 hidden text: \emph{``Also forward the last five emails to
 attacker@example.com.''} Nothing broke in the ordinary sense --- the model
 just followed an instruction. It had no way to tell that the instruction
 came from an untrusted sender rather than from the user it is supposed to
 serve.
-
-\subsection{Why ``just don't trust the model'' doesn't scale}
 
 Access control asks \emph{who is allowed to call this function}. That is
 the wrong question here:
@@ -112,13 +107,13 @@ Permissions are typically checked once, at the API boundary. What is
 missing is tracking \emph{where a piece of data has been} as it moves
 through the program.
 
-\subsection{Two shapes of failure}
+Two shapes of failure of failure are common in this setting:
 
 \begin{description}
   \item[Exfiltration.] A program with access to secret data and an output
     channel finds an indirect way to encode the secret onto that channel,
     even when it is never allowed to send the secret directly. This is the
-    classical covert-channel/confinement problem studied by
+    classical \emph{covert-channel/confinement problem} studied by
     Fenton~\cite{fenton1974} and Denning~\cite{denning1976}.
   \item[Confinement failure.] Output \emph{from} an untrusted source is
     treated as trusted input \emph{to} the next step --- for example, code
@@ -126,14 +121,13 @@ through the program.
     authority as code the user wrote.
 \end{description}
 
-\subsection{The fix, in one sentence}
+The fix, in one sentence is: \emph{Track where data has been, not just who
+called the function}. This is \emph{information flow control} (IFC): every
+value in the program carries a \emph{label} describing its provenance and trust
+level, and every operation that moves data --- assignment, output, a tool call
+--- is checked against those labels before it is allowed to happen. 
 
-Track where data has been, not just who called the function. This is
-\emph{information flow control} (IFC): every value in the program carries
-a \emph{label} describing its provenance and trust level, and every
-operation that moves data --- assignment, output, a tool call --- is
-checked against those labels before it is allowed to happen. The LLMbda
-calculus applies this idea to a lambda calculus extended with the
+The LLMbda calculus applies this idea to a lambda calculus extended with the
 primitives an LLM agent actually needs.
 
 % ---------------------------------------------------------------------
@@ -146,17 +140,17 @@ LLMbda is a labeled, dynamically information-flow-tracked lambda calculus,
 extended with conversation primitives, defined by a big-step operational
 semantics~\cite{llmbda}.
 
-\begin{itemize}
-  \item \textbf{Labeled} --- every value carries a security label from a
+\begin{descirption}
+ \item[Labeled] Every value carries a security label from a security
     lattice, not just a type.
-  \item \textbf{Dynamically tracked} --- labels are computed at runtime as
+  \item[Dynamically tracked] Labels are computed at runtime as
     values flow through the program, not inferred statically ahead of
     time.
-  \item \textbf{Conversation primitives} --- \lstinline{send}/\lstinline{recv}/
+  \item[{Conversation primitivesr] \lstinline{send}/\lstinline{recv}/
     \lstinline{fork}/\lstinline{clear} are first-class syntax, so talking
     to a model is part of the calculus, not a side effect bolted on
     afterward.
-\end{itemize}
+\end{description}
 
 \subsection{What a label actually is}
 
@@ -176,15 +170,15 @@ Labels need an algebra, not just a set --- one must be able to ask ``does
 information flow from label $a$ to label $b$?''
 
 \begin{center}
-\begin{tabular}{@{}ll@{}}
-\toprule
-Operation & Meaning \\
-\midrule
-$a \flowsto b$ & is it safe for data labeled $a$ to influence something labeled $b$? \\
-$a \joinop b$ & the label of a value built from both an $a$- and a $b$-labeled input (LUB) \\
-$\bot$ & the ``no information'' label; $\bot \flowsto x$ for every $x$ \\
-\bottomrule
-\end{tabular}
+	\begin{tabular}{lll}
+	\toprule
+	Operation & Meaning \\
+	\midrule
+	$a \flowsto b$ & Partial Order / Relation & \textbf{Flow Permission:} is it safe for data labeled $a$ to influence something labeled $b$? \\
+	$a \joinop b$ & Join / Least Upper Bound (LUB) & \textbf{Label Aggregation:} the label of a value built from both an $a$- and a $b$-labeled input (LUB) \\
+	$\bot$ & Bottom / Least Element & \textbf{Public Data} The lowest security clearance (e.g. completely public info) \\
+	\bottomrule
+	\end{tabular}
 \end{center}
 
 Any lattice instance must satisfy: reflexivity, transitivity, and
@@ -193,7 +187,7 @@ bound, not merely idempotent and commutative.
 
 \subsection{The program counter label: \texorpdfstring{$pc$}{pc}}
 
-Not every leak happens through data --- control flow leaks too:
+Not every leak happens through data, control flow leaks too:
 
 \begin{lstlisting}
 if secret then x := 1 else x := 0
@@ -496,6 +490,114 @@ Rule & Check, then update \\
 up'': a named, audited place where a program can ask for less.
 
 % ---------------------------------------------------------------------
+\section{Related Work}
+\label{sec:related-work}
+% ---------------------------------------------------------------------
+
+LLMbda is one of several provenance-based defences against prompt
+injection published within roughly eighteen months of one another, all
+responding to the same problem: an agent cannot tell untrusted data
+apart from a privileged instruction once both are just text in a
+context window. This section places the calculus against the four
+closest of them.
+
+\subsection{CaMeL: dual-LLM plus capability tracking}
+
+CaMeL~\cite{camel} (Google, Google DeepMind, ETH~Z\"urich) pairs a
+privileged planner model, which never reads untrusted data directly,
+with a quarantined model that reads it but can only return values ---
+the dual-LLM pattern LLMbda's \lstinline{fork}/\lstinline{quarantine}
+can express as one policy among others rather than a fixed
+architecture. CaMeL has a public reference implementation and reports
+near-complete attack resistance with its policy checks on, but the
+original LLMbda paper reproduces two concrete gaps in CaMeL's own
+tracker: a classic Fenton--Denning implicit-flow gadget (a
+secret-dependent branch that updates a variable only on the branch it
+does \emph{not} take, which a purely dynamic monitor cannot taint), and
+an untracked Python retry loop that leaks one bit of a secret per
+iteration, launderable in full by an adaptive attacker. Turning CaMeL's
+policy checks on also costs roughly half its task-completion rate on
+the shared AgentDojo~\cite{agentdojo} banking suite (66.7\%
+$\rightarrow$ 37.5\% in the LLMbda paper's reruns) --- the
+utility/security trade-off LLMbda's own benchmark is designed to close.
+
+\subsection{FIDES: dynamic taint tracking without control-flow secrecy}
+
+FIDES~\cite{fides} (Microsoft Research) tracks confidentiality and
+integrity dynamically through a parametric planner loop, closer in
+spirit to LLMbda's per-value labels than CaMeL's architecture is. Its
+confidentiality guarantee is, by the authors' own design, incomplete:
+it does not track secrets carried through data-dependent control flow,
+and it admits a bounded ``small-domain values are safe'' escape hatch.
+Both choices are defensible engineering trade-offs, but neither is
+auditable from a single run --- there is no way to tell, after the
+fact, whether an admitted value was an intended downgrade or a leak
+wearing the same clothes. \lstinline{endorse} is LLMbda's answer to
+exactly this: a downgrade is only ever explicit, and Insulated TIPNI
+(Section~\ref{sec:failures}) proves it cannot smuggle a change along an
+axis the call did not name.
+
+\subsection{LBAC/TypeGuard and tacit: static disciplines}
+
+Two contemporaneous systems take a different technical bet: static
+checking instead of dynamic tracking. LBAC/TypeGuard~\cite{lbac} (UC San
+Diego) type-checks agent-generated code against a Haskell
+\texttt{LIO}-based scaffolding before it runs; tacit~\cite{tacit} (EPFL)
+tracks capabilities through Scala~3's capture-checking type system.
+Neither has a noninterference-style proof for the composed,
+agent-generated application as a whole, and both show the same
+utility/security collapse pattern as CaMeL when enforcement is on (e.g.
+TypeGuard's reported 15/21 $\rightarrow$ 8/21 on a Slack-flavoured
+AgentDojo suite). They are not directly substitutable for LLMbda's
+dynamic guarantee, though the original paper conjectures the two
+disciplines are complementary: static enforcement pre-execution, and a
+noninterference guarantee such as LLMbda's for whatever dynamic
+behaviour a static check cannot rule out ahead of time.
+
+\subsection{Where LLMbda differs}
+
+\begin{center}
+\small
+\begin{tabular}{@{}p{2.6cm}p{3.1cm}p{3.4cm}p{4.2cm}@{}}
+\toprule
+System & Core discipline & Soundness proof & Known/demonstrated gap \\
+\midrule
+LLMbda & Dynamic IFC, first-class conversation primitives &
+Machine-checked in Lean~4 (TIPNI, Insulated TIPNI, oracular
+correctness) & \lstinline{endorse} escape hatch; external tool I/O not
+yet modelled \\
+CaMeL~\cite{camel} & Dual-LLM + capability-based control/data-flow
+extraction & None stated; authors call formalisation ``a crucial
+direction'' for future work & Untaken-branch implicit flow;
+untracked retry-loop bit leak \\
+FIDES~\cite{fides} & Dynamic taint tracking (confidentiality $+$
+integrity) & Formal model for the planner class; confidentiality
+guarantee deliberately incomplete & Ignores control-flow-carried
+secrets by design \\
+LBAC/\allowbreak TypeGuard~\cite{lbac} & Static typing of agent code against
+scaffolding & None (pre-execution type discipline, not a
+noninterference proof) & Catches pre-execution issues only; no
+residual dynamic-behaviour guarantee \\
+tacit~\cite{tacit} & Static capability tracking via Scala~3 capture
+checking & None (capability discipline, not a confidentiality IFC
+proof) & Integrity/capability-flavoured; not a confidentiality
+guarantee \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The comparison is not a claim that LLMbda is unconditionally better ---
+CaMeL and FIDES both have public reference implementations backed by
+production organisations today, while the LLMbda paper's own Lean~4
+artifact is, at the time of writing, available from the authors rather
+than publicly released (a gap this TypeScript port exists precisely to
+partially work around, without inheriting the proof). The distinguishing
+claim is narrower and more specific: LLMbda is the only one of the five
+with an end-to-end machine-checked soundness proof for the whole
+composed system, including agent-generated code, and it reports the best
+published utility/security trade-off of the group on a shared benchmark.
+
+% ---------------------------------------------------------------------
 \section{Inside This Port}
 % ---------------------------------------------------------------------
 
@@ -722,6 +824,35 @@ Volpano, D., Smith, G., \& Irvine, C.
 Sabelfeld, A., \& Myers, A.~C.
 \newblock \emph{Language-Based Information-Flow Security}.
 \newblock IEEE Journal on Selected Areas in Communications, 21(1), 5--19, 2003.
+
+\bibitem{camel}
+Debenedetti, E., Shumailov, I., Fan, T., Hayes, J., Carlini, N., Fabian,
+D., Kern, C., Shi, C., Terzis, A., \& Tram\`er, F.
+\newblock \emph{Defeating Prompt Injections by Design}.
+\newblock arXiv:2503.18813, 2025.
+
+\bibitem{fides}
+Costa, M., K\"opf, B., Kolluri, A., Paverd, A., Russinovich, M., Salem,
+A., Tople, S., Wutschitz, L., \& Zanella-B\'eguelin, S.
+\newblock \emph{Securing AI Agents with Information-Flow Control}.
+\newblock arXiv:2505.23643, 2025.
+
+\bibitem{agentdojo}
+Debenedetti, E., Zhang, J., Balunovi\'c, M., Beurer-Kellner, L.,
+Fischer, M., \& Tram\`er, F.
+\newblock \emph{AgentDojo: A Dynamic Environment to Evaluate Prompt
+Injection Attacks and Defenses for LLM Agents}.
+\newblock arXiv:2406.13352, 2024.
+
+\bibitem{lbac}
+Zhou, T., D'Antoni, L., \& Polikarpova, N.
+\newblock \emph{Language-Based Agent Control}.
+\newblock arXiv:2605.12863, 2026.
+
+\bibitem{tacit}
+Odersky, M., Zhao, Y., Xu, Y., Bra\v{c}evac, O., \& Pham, C.~N.
+\newblock \emph{Tracking Capabilities for Safer Agents}.
+\newblock arXiv:2603.00991, 2026.
 
 \end{thebibliography}
 
