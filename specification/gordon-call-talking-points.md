@@ -2,9 +2,9 @@
 
 ## Time: Tuesday, 21st of July, 11:00 to 11:30 CEST
 
-**Tone**: Curious, humble, and respectful. **Aim**: I want to learn from Andy
-Gordon, and to engage in a meaningful discussion with a potentially long-term
-collaborator.
+- **Tone**: Curious, humble, and respectful.
+- **Aim**: I want to learn from Andy Gordon, and to engage in a meaningful
+  discussion with a potentially long-term collaborator.
 
 ---
 
@@ -12,8 +12,8 @@ collaborator.
 
 - About myself: My day job is a enterprise/solution architect at Swiss Federal
   Railways (SBB) working with +25 teams on business critical systems with ~20
-  years of experience. Currently I'm also tech lead for a new project on AI/ML
-  and agentic systems both for the SDLC as well as business initiatives.
+  years of experience. Currently I'm also tech lead AI/ML and agentic systems
+  initiatives both for the SDLC as well as business opportunities.
 
   I have a PhD in (applied) machine learning/pattern recognition and a master's
   in computer science.
@@ -24,8 +24,8 @@ collaborator.
 
 - In my master's thesis I worked on Picoola, a pure composition language under
   the supervision of Prof. Nierstrasz. This is also when I studied your work the
-  first time: "Typing a Multi-Language Intermediate Code" (with Don Syme, POPL
-  '01) — read the Microsoft Research Report and cited it in my own master's
+  first time: _"Typing a Multi-Language Intermediate Code" (with Don Syme, POPL
+  '01)_ — read the Microsoft Research Report and cited it in my own master's
   thesis on JPicoola.
 
 - Prof. Nierstrasz also suggested I reach out to people active in the field to
@@ -35,9 +35,7 @@ collaborator.
 
 - The paper directly demonstrates two concrete gaps in **CaMeL**: an
   untaken-branch implicit-flow leak, and an untracked retry-loop bit-leak
-  channel. Ask how confident he is those hold up under scrutiny/pushback from
-  the **CaMeL** authors.
-
+  channel.
 - **FIDES** deliberately doesn't track control-flow-carried secrets. Ask if he
   sees that as a reasonable engineering trade-off or a real weakness.
 
@@ -69,7 +67,7 @@ collaborator.
   assuming that monadic I/O is what you have in mind, or is there a more
   specific design pattern you have in mind?
 
-- Ask how they see LLMbda relating to the static-typing camp (LBAC/ TypeGuard,
+- Ask how they see LLMbda relating to the static-typing camp (LBAC/TypeGuard,
   tacit) — genuinely complementary, or is one discipline going to subsume the
   other over time?
 
