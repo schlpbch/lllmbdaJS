@@ -1,9 +1,10 @@
-# Talking Points — Call with Andy Gordon
+# Talking Points — Call with Prof. Andrew D. Gordon
 
-## Time: Tuesday, 11:00 to 11:30 CEST
+## Time: Tuesday, 21st of July, 11:00 to 11:30 CEST
 
-Tone: Curious, humble, and respectful. I want to learn from Andy Gordon, and to
-engage in a meaningful discussion with a potentially long-term collaborator.
+**Tone**: Curious, humble, and respectful. **Aim**: I want to learn from Andy
+Gordon, and to engage in a meaningful discussion with a potentially long-term
+collaborator.
 
 ---
 
@@ -11,26 +12,24 @@ engage in a meaningful discussion with a potentially long-term collaborator.
 
 - About myself: My day job is a enterprise/solution architect at Swiss Federal
   Railways (SBB) working with +25 teams on business critical systems with ~20
-  years of experience. I have a PHD in (applied) machine learning and a master's
-  in computer science.
+  years of experience. Currently I'm also tech lead for a new project on AI/ML
+  and agentic systems both for the SDLC as well as business initiatives.
 
-  In my master's thesis I worked on Picolla, a pure compositions language under
-  the supervision of Prof. Nierstrasz. I have a long-standing interest in
-  programming languages, type systems, and formal methods.
+  I have a PhD in (applied) machine learning/pattern recognition and a master's
+  in computer science.
 
 - When not at work, I've started to read and write papers on one hand on Machine
   Learning and on the other hand on applying formal methods to agentic
-  protocols.
+  protocols. Currently also joining the MCP transport working group.
 
-- Starting point: "Typing a Multi-Language Intermediate Code" (with Don Syme,
-  POPL '01) — read the Microsoft Research Report and cited it in my own master's
-  thesis on JPicolla.
+- In my master's thesis I worked on Picoola, a pure composition language under
+  the supervision of Prof. Nierstrasz. This is also when I studied your work the
+  first time: "Typing a Multi-Language Intermediate Code" (with Don Syme, POPL
+  '01) — read the Microsoft Research Report and cited it in my own master's
+  thesis on JPicoola.
 
-- To quite some degree, the appendix reminded me of a stack based VM like the
-  JVM, and the calculus reminded me of the JPicolla VM. I have a PoC
-  implementation of the calculus in JS/TS that I would like to discuss with you.
-
----
+- Prof. Nierstrasz also suggested I reach out to people active in the field to
+  get feedback and guidance.
 
 ## 1. Competitive/comparative landscape (~4 min)
 
@@ -39,20 +38,18 @@ engage in a meaningful discussion with a potentially long-term collaborator.
   channel. Ask how confident he is those hold up under scrutiny/pushback from
   the **CaMeL** authors.
 
-- FIDES deliberately doesn't track control-flow-carried secrets. Ask if he sees
-  that as a reasonable engineering trade-off or a real weakness.
+- **FIDES** deliberately doesn't track control-flow-carried secrets. Ask if he
+  sees that as a reasonable engineering trade-off or a real weakness.
 
-- LBAC/TypeGuard and tacit take a static-typing/capability route instead of
-  dynamic IFC. Ask whether he sees these as competitors, or as solving a
-  genuinely different problem that could combine with LLMbda later.
+- **LBAC/TypeGuard** and **tacit** take a static-typing/capability route instead
+  of dynamic IFC. Do you see these as competitors, or as solving a genuinely
+  different problem that could combine with LLMbda later.
 
-## 2. Questions about the calculus (~4 min)
+## 2. Questions about the Paper on LLMbda (~9 min)
 
-- What if the discrete Untrusted vs Trusted Principal are e.g. likelihoods or
-  probabilities rather than booleans? Does the calculus still work, or is that a
-  fundamentally different problem? The fundamental question is to get the
-  labeling wright IMHO, and then the calculus should work with any labeling
-  scheme.
+- What if the Boolean Untrusted vs Secure Principle are e.g. likelihoods or
+  probabilities? IMHO, the fundamental question is to get the labeling right,
+  and then the calculus should work with any labeling scheme.
 
 - In how far is information leakage through termination equivalent to examining
   the current continuation?
@@ -63,19 +60,10 @@ engage in a meaningful discussion with a potentially long-term collaborator.
   an agent is also tracked. Could this somehow be unified, or is that a
   fundamentally different problem?
 
-## 2. `endorse` misuse (~8 min)
+- To quite some degree, the appendix reminded me of a stack based VM like the
+  JVM. I assume that's intentional.
 
-- Insulated TIPNI proves the override stays scoped to one axis — but nothing
-  stops an agent plan from calling `endorse` when it shouldn't.
-
-- Both of Randori's successful attacks trace back to this.
-
-- **Ask:** Is there a design pattern (plan-time-only endorsement, harness-level
-  restriction) they'd actually recommend, or is this still open?
-
----
-
-## 3. Where the calculus goes next (~9 min)
+## 3. Question about Future Work on LLMbda (~9 min)
 
 - Tool I/O modeling is the paper's own stated gap (NFR-2) — Am I correctly
   assuming that monadic I/O is what you have in mind, or is there a more
@@ -85,18 +73,19 @@ engage in a meaningful discussion with a potentially long-term collaborator.
   tacit) — genuinely complementary, or is one discipline going to subsume the
   other over time?
 
----
-
 ## Close (2 min)
 
-- Would you kindly provide me access to the LEAN test set. I just finished a PoC
-  of a VM in JS/TS that tries to run the LLMBda calculus as specified in the
-  paper by Andy Gordon. I now have 100% test coverage (using 29 examples), thus
-  the implementation in it self is sound. However I do not know whether it
-  implements your test set, test set being a implicit specification of the
-  calculus as well. I would like to run the test set against my implementation
-  to see whether it is complete as well.
+- Would you kindly provide me access to the **LEAN** test set. I just finished a
+  PoC of a VM in JS/TS that tries to run the LLMBda calculus as specified in the
+  paper by Andy Gordon. I now have 100% statement/branch coverage across 29
+  regression examples — though of course that's not a soundness proof, which is
+  exactly what I'd want to check against your Lean test set.
 
-- Looking for a mentor and affiliation. Lack of bo
+  However I do not know whether it implements your test set, test set being an
+  implicit specification of the calculus as well. I would like to run the test
+  set against my implementation to see whether it is complete as well.
 
----
+- Looking for a mentor and affiliation. Lack of both is a showstopper for me to
+  continue my research in this field. I would like to ask whether you would be
+  willing to mentor me, and/or whether you could provide me with an affiliation
+  (e.g. as a visiting researcher) to continue my research in this field.
