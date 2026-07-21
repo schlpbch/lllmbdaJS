@@ -12,13 +12,33 @@ and presented in their paper
 [_"The LLMbda Calculus: AI Agents, Conversations, and Information Flow"_](https://arxiv.org/abs/2602.20064)
 (arXiv:2602.20064, July 2026).
 
-## What this Intends to Be
+## The LLMbda in a Nutshell
+
+The LLMbda is an **untyped call-by-value lambda calculus** that makes
+provenance-based defense both expressible and provably sound, without committing
+to an architecture. It adds the **operational core of agentic systems as
+first-class constructs**: prompt-response conversations that can be forked and
+cleared, code generation, and dynamic information-flow control in which every
+value carries a label that every reduction propagates. Isolation becomes a
+policy a program expresses, and reclassification an explicit, auditable
+construct.
+
+The central result is a **termination-insensitive probabilistic noninterference
+(TIPNI) theorem** over the whole calculus, including code-generating agents,
+with an insulated variant that holds even when the attacker chooses all
+untrusted inputs. The verified interpreter is itself the harness that calls the
+model and the first LLM agent harness whose executable is the subject of
+machine-checked security theorems, so every agent inherits the guarantee.
+
+## What this Implementation Intends to Be
 
 An executable interpreter for the calculus's operational semantics: labeled
 lambda calculus + first-class conversation primitives (`send`, `recv`, `fork`,
 `clear`) + dynamic information-flow labels (`l : e`, `e1 ? e2`, `assert`,
-`endorse`). It follows the paper's §3/§5/§B big-step rules, evaluation-rule by
-evaluation-rule — each rule in `src/evaluator.ts` is commented with the paper
+`endorse`).
+
+It follows the paper's §3/§5/§B big-step rules, evaluation-rule by
+evaluation-rule. Each rule in `src/evaluator.ts` is commented with the paper
 section it implements.
 
 ## What this is **Not**
@@ -131,9 +151,9 @@ Roughly in order of how much they'd actually buy you:
 
 ## Where this Currently does not Go
 
-Porting to another programming language (like Python or Rust). While this would
-be fun endeavors, getting this implementation complete and correct shall be the
-current focus.
+Porting to another programming language (like Python, Rust or Haskell). While
+this would be fun endeavors, getting this implementation complete and correct
+shall be the current focus.
 
 ## Legal Stuff
 
