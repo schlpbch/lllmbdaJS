@@ -39,6 +39,17 @@ _inputs_ produce the same _outputs_ as the paper's interpreter (spot-checked
 against the paper's own worked examples in `examples/`, including its named leak
 example and a positive `endorse` test).
 
+## Project Principles
+
+The development of this port is guided by eight non-negotiable principles
+documented in [`CONSTITUTION.md`](CONSTITUTION.md). Read it to understand:
+
+- How fidelity to the paper's formal text is maintained
+- Why claims about what the interpreter does or doesn't guarantee are carefully
+  hedged
+- How regressions are caught (regression tests proven to fail first)
+- How gaps between the paper and the port are documented, not hidden
+
 ## Structure
 
 ```
@@ -62,8 +73,9 @@ examples/        — one file per worked scenario or regression test, each run b
 
 ## Design choices worth knowing about
 
-See `docs/adr/` for the full reasoning and alternatives considered behind each
-of these.
+Each design choice below has a detailed
+[Architecture Decision Record](docs/adr/README.md) explaining the reasoning and
+alternatives considered.
 
 - **`quarantine`/`robust_endorse`/`bounded_endorse` are object-language
   closures** (`prelude.ts`), not host TS functions — agent-generated code can
