@@ -43,14 +43,11 @@ src/
                    as real object-language closures, not host TS functions
   errors.ts      — SecurityError vs RuntimeError
 
-examples/        — one file per worked scenario or regression test, each run by
-                   `test/run.ts` as a pass/fail suite. Covers the paper's own
-                   examples (postcode extraction, retry loops, the Fenton/Denning
-                   leak, quarantine + endorse, the CaMeL-style lattice) plus a
-                   regression test per bug found and fixed during rule-by-rule
-                   audits against the paper's formal semantics (see git history
-                   for details — none are hypothetical, each has a regression
-                   test that was verified to fail against the pre-fix code).
+examples/        — one file per worked scenario or regression test, each run by `test/run.ts`
+                   as a pass/fail suite. Covers the paper's own examples (postcode extraction,
+                   retry loops, the Fenton/Denning leak, quarantine + endorse, the CaMeL-style
+                   lattice) plus a regression test per bug found and fixed during rule-by-rule
+                   audits against the paper's formal semantics.
 ```
 
 ## Design choices worth knowing about
@@ -110,4 +107,11 @@ Roughly in order of how much they'd actually buy you:
    `scriptedOracle`/`ruleOracle` (test doubles) exist; a production
    oracle is a thin adapter.
 
-Copyright 2026, Andreas Schlapbach
+## Where this currently does not go
+
+Porting to another programming language (like Python or Rust). While this
+would be fun endevours, getting this implementation complete and correct
+shall be the current focus.
+
+## Legal Stuff
+Copyright 2026, Andreas Schlapbach 
