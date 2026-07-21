@@ -8,7 +8,7 @@ A TypeScript reference implementation of the **LLMbda calculus** — Garby,
 Gordon & Sands, *"The LLMbda Calculus: AI Agents, Conversations, and
 Information Flow"* (arXiv:2602.20064, July 2026).
 
-## What this tries to be
+## What this is be
 
 An executable interpreter for the calculus's operational semantics:
 labeled lambda calculus + first-class conversation primitives (`send`,
@@ -33,7 +33,7 @@ including its named leak example and a positive `endorse` test).
 
 ```
 src/
-  ast.ts        — Expr/Value AST + TS-native builder functions (§3.1, §3.2, §B.1)
+  ast.ts         — Expr/Value AST + TS-native builder functions (§3.1, §3.2, §B.1)
   lattice.ts     — Lattice<L>/FactoredLattice<L,I,S> + the {U,S}-powerset and
                    CaMeL-style Sources×Readers instances (§3.2, §5.2, Appendix D.5)
   model.ts       — parse/serialise/primEval/toLabel config (§3.3, §B.1)
@@ -43,14 +43,14 @@ src/
                    as real object-language closures, not host TS functions
   errors.ts      — SecurityError vs RuntimeError
 
-examples/   — one file per worked scenario or regression test, each run by
-              `test/run.ts` as a pass/fail suite. Covers the paper's own
-              examples (postcode extraction, retry loops, the Fenton/Denning
-              leak, quarantine + endorse, the CaMeL-style lattice) plus a
-              regression test per bug found and fixed during rule-by-rule
-              audits against the paper's formal semantics (see git history
-              for details — none are hypothetical, each has a regression
-              test that was verified to fail against the pre-fix code).
+examples/        — one file per worked scenario or regression test, each run by
+                   `test/run.ts` as a pass/fail suite. Covers the paper's own
+                   examples (postcode extraction, retry loops, the Fenton/Denning
+                   leak, quarantine + endorse, the CaMeL-style lattice) plus a
+                   regression test per bug found and fixed during rule-by-rule
+                   audits against the paper's formal semantics (see git history
+                   for details — none are hypothetical, each has a regression
+                   test that was verified to fail against the pre-fix code).
 ```
 
 ## Design choices worth knowing about
