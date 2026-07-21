@@ -56,6 +56,7 @@ pnpm run example:model-primitives-coverage
 pnpm run example:camel-lattice-any-source
 pnpm run example:run-program-base-env
 pnpm run example:label-lit-decodable
+pnpm run example:conformance
 ```
 
 There is no separate lint step and no per-test filtering flag — `test/run.ts`
@@ -143,6 +144,16 @@ src/
 examples/       one file per worked scenario/regression test; test/run.ts
                 runs all of them as the test suite (see table in README.md
                 for what each one exercises)
+
+test/conformance/  conformance suite vs the paper's probabilistic semantics
+                (§B.3 / Lean PBigStep) — finite-support oracle vectors whose
+                exact outcome distributions are enumerated and compared
+                against hand-derived expectations (ADR-0008). Entry point is
+                examples/conformance.ts (auto-run by pnpm test). To add a
+                vector: extend a file in test/conformance/vectors/ with a
+                program + oracle support + expected distribution, citing the
+                paper rule the expectation is derived from. Weights must
+                never migrate into src/ (ADR-0003).
 ```
 
 ### Substitution semantics, not environments — and the bug that came from conflating them

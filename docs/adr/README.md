@@ -42,6 +42,7 @@ What this buys, and what it costs or forecloses.
 | [0005](0005-endorse-runtime-lattice-capability-check.md) | `endorse`'s `FactoredLattice` requirement is a runtime check, not a type constraint |
 | [0006](0006-naive-json-parse-serialise.md) | Default `parse`/`serialise` is naive JSON, not a grammar-constrained parser |
 | [0007](0007-fork-snapshots-conversation.md) | `fork` snapshots the conversation instead of gating access to it |
+| [0008](0008-finite-oracle-conformance-suite.md) | Conformance against the probabilistic semantics via finite-oracle enumeration |
 
 ## Adding a new ADR
 

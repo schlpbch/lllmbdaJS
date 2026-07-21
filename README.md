@@ -51,6 +51,19 @@ examples/   — one file per worked scenario or regression test, each run by
               audits against the paper's formal semantics (see git history
               for details — none are hypothetical, each has a regression
               test that was verified to fail against the pre-fix code).
+
+test/conformance/ — conformance suite against the paper's *probabilistic*
+              semantics (§B.3; the Lean `PBigStep`/`peval`): vectors pair a
+              program with a finite-support oracle distribution, the harness
+              enumerates every response path (recv is the sole source of
+              nondeterminism, so the interpreter is deterministic per path),
+              and the resulting exact-rational outcome distribution must
+              equal one hand-derived from the paper's rules. Includes
+              distribution-equality pairs (secret-varying runs whose
+              distributions must coincide — a finite, TIPNI-shaped check)
+              and self-tests of the harness's own failure paths. Weights
+              live only here, never in src/ (ADR-0003, ADR-0008). Run via
+              `examples/conformance.ts`, picked up by `pnpm test`.
 ```
 
 ## Design choices worth knowing about
@@ -102,10 +115,18 @@ Roughly in order of how much they'd actually buy you:
    generate `∼ₘ`-related program pairs and check their traces are
    compatible under a scripted oracle — real evidence, never a proof, but
    also a good way to hunt for further undiscovered divergences.
+   `test/conformance/`'s hand-written distribution-equality pairs are the
+   fixed-case seed of this; the generative version is what's missing.
 3. **A conformance-vector harness against the Lean `peval`** — diffing
    this interpreter's output against Lean-side `(program, oracle) →
-   (conversation, value)` triples on shared test programs. Given the bugs
-   already found by hand, probably the highest-value item on this list.
+   (conversation, value)` triples on shared test programs. The
+   probabilistic-semantics side of this now exists in fixed-vector form
+   (`test/conformance/`, ADR-0008: finite-oracle enumeration checked
+   against hand-derived distributions); what's still missing is
+   *machine-generated* vectors from the actual Lean interpreter, which
+   would replace "the rules as we read them" with "the rules as Lean
+   executes them". Given the bugs already found by hand, still probably
+   the highest-value item on this list.
 4. **A real `Oracle` backed by an actual LLM API** — currently only
    `scriptedOracle`/`ruleOracle` (test doubles) exist; a production
    oracle is a thin adapter.

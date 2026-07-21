@@ -37,7 +37,8 @@
     "example:model-primitives-coverage": "node --import tsx examples/model-primitives-coverage.ts",
     "example:camel-lattice-any-source": "node --import tsx examples/camel-lattice-any-source.ts",
     "example:run-program-base-env": "node --import tsx examples/run-program-base-env.ts",
-    "example:label-lit-decodable": "node --import tsx examples/label-lit-decodable.ts"
+    "example:label-lit-decodable": "node --import tsx examples/label-lit-decodable.ts",
+    "example:conformance": "node --import tsx examples/conformance.ts"
   },
   "devDependencies": {
     "@types/node": "^26.1.1",
